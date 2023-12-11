@@ -41,32 +41,32 @@ const computedHexNumber = computed({
   },
 });
 
-// if ('bluetooth' in navigator) {
-//     // Request Bluetooth device
-//     try {
-//         const device = await navigator.bluetooth.requestDevice({
-//             filters: [{ services: [0x180F] }], // Replace with your service UUID
-//         });
+if ('bluetooth' in navigator) {
+    // Request Bluetooth device
+    try {
+        const device = await navigator.bluetooth.requestDevice({
+            filters: [{ services: [0x181A] }], // Replace with your service UUID
+        });
 
-//         const server = await device.gatt.connect();
-//         const service = await server.getPrimaryService(0x180F); // Replace with your service UUID
-//         const characteristic = await service.getCharacteristic(0x2A19); // Replace with your characteristic UUID
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService(0x181A); // Replace with your service UUID
+        const characteristic = await service.getCharacteristic(0x0003); // Replace with your characteristic UUID
 
-//         // Set up event listener for characteristic value changes
-//         characteristic.addEventListener('characteristicvaluechanged', (event) => {
-//             const value = event.target.value;
-//             // Handle the received value (button state)
-//             console.log('Received value:', value.getUint8(0));
-//         });
+        // Set up event listener for characteristic value changes
+        characteristic.addEventListener('characteristicvaluechanged', (event) => {
+            const value = event.target.value;
+            // Handle the received value (button state)
+            console.log('Received value:', value.getUint8(0));
+        });
 
-//         // Enable notifications for characteristic value changes
-//         await characteristic.startNotifications();
-//     } catch (error) {
-//         console.error('Error:', error);
-//     }
-// } else {
-//     console.error('Web Bluetooth is not supported.');
-// }
+        // Enable notifications for characteristic value changes
+        await characteristic.startNotifications();
+    } catch (error) {
+        console.error('Error:', error);
+    }
+} else {
+    console.error('Web Bluetooth is not supported.');
+}
 
 
 
