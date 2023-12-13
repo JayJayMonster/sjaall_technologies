@@ -1,24 +1,21 @@
 <template>
   <div class="flex flex-col justify-center items-center h-screen m-2">
+    <div class="font-bold text-4xl mb-16">
+      <h1>SJAALL TECHNOLOGIES</h1>
+    </div>
     <div>
       Dit is jouw kleur:
     </div>
     <div class="m-2">
       <p class="font-bold text-center">{{ computedHexNumber }}</p>
-      <input class="text-center m-1 rounded" v-model="computedHexNumber" />
+      <input class=" text-center border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring focus:border-blue-500" v-model="computedHexNumber" />
     </div>
-    <p v-if="bluetoothInfo.isBluetoothAvailable">Bluetooth is available</p>
-    <p v-else>Bluetooth is not available</p>
-    <button @click="bluetoothInfo.connectToDevice" :disabled="!bluetoothInfo.isBluetoothAvailable">Connect to Device</button>
+    <button @click="bluetooth" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Connect to Bluetooth device</button>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useBluetooth } from '~/composables/useBluetooth';
-
 const hexNumber = ref('');
-const bluetoothInfo = useBluetooth();
 
 const computedHexNumber = computed({
   get: () => hexNumber.value,
@@ -27,4 +24,6 @@ const computedHexNumber = computed({
     hexNumber.value = value;
   },
 });
+
+const { bluetooth } = useBluetooth();
 </script>
