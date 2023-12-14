@@ -19,25 +19,27 @@ const { bluetooth, decodedData } = useBluetooth();
 // Create a ref to store the decoded data
 const decodedDataRef = ref('');
 
-// Watch for changes in decodedData and update the ref accordingly
+// // Watch for changes in decodedData and update the ref accordingly
 watchEffect(() => {
   decodedDataRef.value = decodedData.value;
 });
 
-// Create a computed property for setting the background color
+// // Create a computed property for setting the background color
 const computedBackgroundColor = computed({
-  get: () => decodedDataRef.value,
-  set: (value) => {
-    document.body.style.backgroundColor = value;
-    decodedDataRef.value = value;
-  },
-});
+      get: () => decodedDataRef.value,
+      set: (value) => {
+        // Check if we are in a browser environment
+        if (typeof window !== 'undefined') {
+          document.body.style.backgroundColor = value;
+        }
+        decodedDataRef.value = value;
+      },
+    });
 
 
-  // Watch for changes in decodedData and trigger the computed property to update
+//   // Watch for changes in decodedData and trigger the computed property to update
   watchEffect(() => {
       computedBackgroundColor.value = decodedDataRef.value;
     });
 
-// console.log(decodedData);
 </script>
