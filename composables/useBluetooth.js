@@ -1,46 +1,69 @@
 export const useBluetooth = () => {
+  const decodedData = ref('');
+
+  const parseRGBValues = rgbString => {
+    const [red, green, blue] = rgbString.split(',').map(Number);
+
+    // Validate and ensure that the values are within the valid range (0-255)
+    const validRed = isNaN(red) ? 0 : Math.min(255, Math.max(0, red));
+    const validGreen = isNaN(green) ? 0 : Math.min(255, Math.max(0, green));
+    const validBlue = isNaN(blue) ? 0 : Math.min(255, Math.max(0, blue));
+
+    return { validRed, validGreen, validBlue };
+  };
+
   const bluetooth = () => {
-    // Request access to Bluetooth devices
     navigator.bluetooth
       .requestDevice({
         filters: [{ services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] }],
       })
-      .then(device => {
-        console.log('Device connected:', device.name);
+      .then(device => device.gatt.connect())
+      .then(server =>
+        server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e')
+      )
+      .then(service =>
+        service.getCharacteristic('6e400003-b5a3-f393-e0a9-e50e24dcca9e')
+      )
+      .then(characteristic => characteristic.startNotifications())
+      .then(characteristic => {
+        characteristic.addEventListener('characteristicvaluechanged', event => {
+          const receivedData = event.target.value;
+          const decoder = new TextDecoder('utf-8');
+          const localDecodedData = decoder.decode(receivedData); // Rename the local variable
 
-        // Connect to the selected device
-        return device.gatt.connect();
-      })
-      .then(server => {
-        console.log('Connected to GATT server');
+          // Use the parseRGBValues function to get valid RGB values
+          const { validRed, validGreen, validBlue } =
+            parseRGBValues(localDecodedData);
 
-        // Get the specified service
-        return server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e');
-      })
-      .then(service => {
-        console.log('Got service:', service.uuid);
+          // Update the decodedData ref with the formatted RGB string
+          decodedData.value = `rgb(${validRed}, ${validGreen}, ${validBlue})`;
+        });
 
-        // Get the characteristic you want to write to
-        return service.getCharacteristic(
+        // Get the second characteristic to send data to
+        return characteristic.service.getCharacteristic(
           '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
         );
       })
-      .then(characteristic => {
-        console.log('Got characteristic:', characteristic.uuid);
+      .then(secondCharacteristic => {
+        // Function to send data
+        function sendData(data) {
+          const encoder = new TextEncoder('utf-8');
+          const dataArrayBuffer = encoder.encode(data);
+          return secondCharacteristic.writeValue(dataArrayBuffer);
+        }
 
-        // Prepare data to be sent (convert your message to ArrayBuffer)
-        const message = 'Hallo, Sander!';
-        const encodedMessage = new TextEncoder().encode(message);
-
-        // Write the value to the characteristic
-        return characteristic.writeValue(encodedMessage);
+        // Sending "scan\r\n" to the device using the second characteristic
+        return sendData('scan\r\n');
       })
       .then(() => {
-        console.log('Message sent successfully');
+        console.log(
+          'Message sent successfully to second characteristic: scan\\r\\n'
+        );
       })
       .catch(error => {
         console.error('Error:', error);
       });
   };
-  return { bluetooth };
+
+  return { decodedData, bluetooth };
 };
