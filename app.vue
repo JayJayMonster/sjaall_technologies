@@ -9,12 +9,13 @@
     <div class="m-2">
       <p class="font-bold text-center">{{ decodedData }}</p>
     </div>
-    <button @click="bluetooth" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Connect to Bluetooth device</button>
+    <button @click="connectBluetooth" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mb-4">Connect to Bluetooth device</button>
+    <button @click="getDataFromBluetooth" class="bg-amber-500 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded">Get Data</button>
   </div>
 </template>
 
 <script setup>
-const { bluetooth, decodedData } = useBluetooth();
+const { connectBluetooth, getDataFromBluetooth, decodedData } = useBluetooth();
 
 // Create a ref to store the decoded data
 const decodedDataRef = ref('');
