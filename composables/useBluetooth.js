@@ -1,5 +1,8 @@
 export const useBluetooth = () => {
   const decodedData = ref('');
+  let bluetoothDevice; // Variable to store the Bluetooth device
+  let writeCharacteristic; // Variable to store the write characteristic
+  let readCharacteristic; // Variable to store the read characteristic
 
   const parseRGBValues = rgbString => {
     const [red, green, blue] = rgbString.split(',').map(Number);
@@ -12,58 +15,75 @@ export const useBluetooth = () => {
     return { validRed, validGreen, validBlue };
   };
 
-  const bluetooth = () => {
-    navigator.bluetooth
-      .requestDevice({
+  const connectBluetooth = async () => {
+    try {
+      bluetoothDevice = await navigator.bluetooth.requestDevice({
         filters: [{ services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] }],
-      })
-      .then(device => device.gatt.connect())
-      .then(server =>
-        server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e')
-      )
-      .then(service =>
-        service.getCharacteristic('6e400003-b5a3-f393-e0a9-e50e24dcca9e')
-      )
-      .then(characteristic => characteristic.startNotifications())
-      .then(characteristic => {
-        characteristic.addEventListener('characteristicvaluechanged', event => {
-          const receivedData = event.target.value;
-          const decoder = new TextDecoder('utf-8');
-          const localDecodedData = decoder.decode(receivedData); // Rename the local variable
-
-          // Use the parseRGBValues function to get valid RGB values
-          const { validRed, validGreen, validBlue } =
-            parseRGBValues(localDecodedData);
-
-          // Update the decodedData ref with the formatted RGB string
-          decodedData.value = `rgb(${validRed}, ${validGreen}, ${validBlue})`;
-        });
-
-        // Get the second characteristic to send data to
-        return characteristic.service.getCharacteristic(
-          '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
-        );
-      })
-      .then(secondCharacteristic => {
-        // Function to send data
-        function sendData(data) {
-          const encoder = new TextEncoder('utf-8');
-          const dataArrayBuffer = encoder.encode(data);
-          return secondCharacteristic.writeValue(dataArrayBuffer);
-        }
-
-        // Sending "scan\r\n" to the device using the second characteristic
-        return sendData('scan\r\n');
-      })
-      .then(() => {
-        console.log(
-          'Message sent successfully to second characteristic: scan\\r\\n'
-        );
-      })
-      .catch(error => {
-        console.error('Error:', error);
       });
+
+      const server = await bluetoothDevice.gatt.connect();
+      const service = await server.getPrimaryService(
+        '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
+      );
+      writeCharacteristic = await service.getCharacteristic(
+        '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
+      );
+      readCharacteristic = await service.getCharacteristic(
+        '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
+      );
+
+      readCharacteristic.startNotifications();
+      readCharacteristic.addEventListener(
+        'characteristicvaluechanged',
+        handleCharacteristicValueChanged
+      );
+
+      console.log('Bluetooth connected successfully');
+    } catch (error) {
+      console.error('Error connecting to Bluetooth: ', error);
+    }
   };
 
-  return { decodedData, bluetooth };
+  const getDataFromBluetooth = () => {
+    if (writeCharacteristic) {
+      // Sending a 'scan\r\n' command to receive data
+      const command = 'scan\r\n';
+      const encoder = new TextEncoder('utf-8');
+      const dataArrayBuffer = encoder.encode(command);
+      writeCharacteristic.writeValue(dataArrayBuffer);
+    } else {
+      console.error(
+        'Bluetooth write characteristic not initialized. Please connect first.'
+      );
+    }
+  };
+
+  const handleCharacteristicValueChanged = event => {
+    const receivedData = event.target.value;
+    const decoder = new TextDecoder('utf-8');
+    const localDecodedData = decoder.decode(receivedData);
+
+    // Use the parseRGBValues function to get valid RGB values
+    const { validRed, validGreen, validBlue } =
+      parseRGBValues(localDecodedData);
+
+    // Update the decodedData ref with the formatted RGB string
+    decodedData.value = `rgb(${validRed}, ${validGreen}, ${validBlue})`;
+  };
+
+  const disconnectBluetooth = async () => {
+    try {
+      await bluetoothDevice.gatt.disconnect();
+      console.log('Bluetooth disconnected successfully');
+    } catch (error) {
+      console.error('Error disconnecting Bluetooth: ', error);
+    }
+  };
+
+  return {
+    decodedData,
+    connectBluetooth,
+    getDataFromBluetooth,
+    disconnectBluetooth,
+  };
 };
