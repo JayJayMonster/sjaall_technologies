@@ -1,7 +1,11 @@
 <template>
   <div class="flex flex-col justify-center items-center h-screen m-2">
-    <div class="font-bold text-4xl mb-16">
-      <h1 class="text-center">SJAALL TECHNOLOGIES</h1>
+    <img src="~/assets/images/notext.png" alt="logo" class="h-32 mb-8">
+    <div class="font-bold text-4xl mb-4">
+      <div>
+          <h1 class="text-center">SJAALL TECHNOLOGIES</h1>
+        <hr class="bg-purple-600 h-0.5 mx-auto sm:mx-8">
+      </div>
     </div>
     <div>
       Dit is jouw kleur:
@@ -9,9 +13,11 @@
     <div class="m-2">
       <p class="font-bold text-center">{{ decodedData }}</p>
     </div>
-    <button @click="connectBluetooth" class="bg-purple-400 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded mb-4">Connect to Bluetooth device</button>
-  <button @click="getDataFromBluetooth" class="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 mb-4 rounded">Get Data</button>
-  <button @click="disconnectBluetooth" class="bg-purple-800 hover:bg-purple-900 text-white font-bold py-2 px-4 rounded">Disconnect</button>
+    <div class="flex items-stretch flex-col">
+      <button @click="connectBluetooth" class="bg-purple-600 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded mb-4">Connect to Bluetooth device</button>
+      <button @click="getDataFromBluetooth" class="bg-purple-600 hover:bg-purple-800 text-white font-bold py-2 px-4 mb-4 rounded">Get Data</button>
+      <button @click="disconnectBluetooth" class="bg-purple-600 hover:bg-purple-900 text-white font-bold py-2 px-4 rounded">Disconnect</button>
+    </div>
   </div>
 </template>
 
