@@ -3,7 +3,10 @@ export default {
   content: [],
   theme: {
     colors: {
-      purple: '#92278F',
+      'purple': '#00FF00',
+      'white': '#FFFFFF',
+      'black': '#000000',
+      'yellow': '#FF00FF',
     },
     extend: {
       screens: {

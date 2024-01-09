@@ -14,9 +14,9 @@
       <p class="font-bold text-center">{{ decodedData }}</p>
     </div>
     <div class="flex items-stretch flex-col">
-      <button @click="connectBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-white font-bold py-2 px-4 rounded mb-4">Connect to Bluetooth device</button>
-      <button @click="getDataFromBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-white font-bold py-2 px-4 mb-4 rounded">Get Data</button>
-      <button @click="disconnectBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-white font-bold py-2 px-4 rounded">Disconnect</button>
+      <button @click="connectBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 rounded mb-4">Connect to Bluetooth device</button>
+      <button @click="getDataFromBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 mb-4 rounded">Get Data</button>
+      <button @click="disconnectBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 rounded">Disconnect</button>
     </div>
   </div>
 </template>
