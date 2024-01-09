@@ -2,6 +2,9 @@
 export default {
   content: [],
   theme: {
+    colors: {
+      purple: '#92278F',
+    },
     extend: {
       screens: {
         sm: '320px', // Small screens, such as mobile phones (320px)
