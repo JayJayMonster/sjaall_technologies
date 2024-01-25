@@ -22,25 +22,25 @@ export const useBluetooth = () => {
       bluetoothDevice = await navigator.bluetooth.requestDevice({
         filters: [{ services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] }],
       });
-      isConnected.value = true; // Set connection status to true
       const server = await bluetoothDevice.gatt.connect();
       const service = await server.getPrimaryService(
         '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
-      );
-      writeCharacteristic = await service.getCharacteristic(
-        '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
-      );
-      readCharacteristic = await service.getCharacteristic(
-        '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
-      );
-
-      readCharacteristic.startNotifications();
-      readCharacteristic.addEventListener(
-        'characteristicvaluechanged',
-        handleCharacteristicValueChanged
-      );
-
-      console.log('Bluetooth connected successfully');
+        );
+        writeCharacteristic = await service.getCharacteristic(
+          '6e400002-b5a3-f393-e0a9-e50e24dcca9e'
+          );
+          readCharacteristic = await service.getCharacteristic(
+            '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
+            );
+            
+            readCharacteristic.startNotifications();
+            readCharacteristic.addEventListener(
+              'characteristicvaluechanged',
+              handleCharacteristicValueChanged
+              );
+              
+              isConnected.value = true; // Set connection status to true
+              console.log('Bluetooth connected successfully');
     } catch (error) {
       isConnected.value = false; // Set connection status to false in case of an error
       console.error('Error connecting to Bluetooth: ', error);
@@ -77,8 +77,8 @@ export const useBluetooth = () => {
   const disconnectBluetooth = async () => {
     try {
       await bluetoothDevice.gatt.disconnect();
+      // decodedData.value = `rgb(255, 255, 255)`;
       isConnected.value = false; // Set connection status to false upon disconnection
-      decodedData.value = `rgb(255, 255, 255)`;
       console.log('Bluetooth disconnected successfully');
     } catch (error) {
       console.error('Error disconnecting Bluetooth: ', error);

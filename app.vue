@@ -12,7 +12,6 @@
     </div>
     <div class="m-2">
       <p 
-        v-if="isConnected" 
         class="font-bold text-center">
       {{ decodedData }}</p>
     </div>
@@ -40,14 +39,17 @@ watchEffect(() => {
   decodedDataRef.value = decodedData.value;
 });
 
-// Create a computed property for setting the background color
+// // Create a computed property for setting the background color
 const computedBackgroundColor = computed({
   get: () => {
     return isConnected ? decodedDataRef.value : '#FFFFFF'; // Use white background when not connected
   },
   set: (value) => {
     if (typeof window !== 'undefined') {
+      if (isConnected) {
+        // Update the background color only when not connected
         document.body.style.backgroundColor = value;
+      }
     }
 
     decodedDataRef.value = value;
@@ -59,5 +61,7 @@ const computedBackgroundColor = computed({
   watchEffect(() => {
       computedBackgroundColor.value = decodedDataRef.value;
     });
+
+
 
 </script>
