@@ -8,7 +8,7 @@
       </div>
     </div>
     <div>
-      Dit is jouw kleur:
+      This is your colour:
     </div>
     <div class="m-2">
       <p class="font-bold text-center">{{ decodedData }}</p>
@@ -20,7 +20,7 @@
               class="text-[#FFFFFF] font-bold py-2 px-4 rounded mb-4">
         {{ isConnected ? 'Device connected' : 'Connect to Bluetooth device' }}
       </button>   
-      <button @click="getDataFromBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 mb-4 rounded">Scan color</button>
+      <button @click="getDataFromBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 mb-4 rounded">Scan colour</button>
       <button v-if="isConnected" @click="disconnectBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 rounded">Disconnect device</button>
     </div>
   </div>
