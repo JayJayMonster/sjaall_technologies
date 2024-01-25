@@ -3,6 +3,8 @@ export const useBluetooth = () => {
   let bluetoothDevice; // Variable to store the Bluetooth device
   let writeCharacteristic; // Variable to store the write characteristic
   let readCharacteristic; // Variable to store the read characteristic
+   // Create a ref to track connection status
+   const isConnected = ref(false);
 
   const parseRGBValues = rgbString => {
     const [red, green, blue] = rgbString.split(',').map(Number);
@@ -20,7 +22,7 @@ export const useBluetooth = () => {
       bluetoothDevice = await navigator.bluetooth.requestDevice({
         filters: [{ services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] }],
       });
-
+      isConnected.value = true; // Set connection status to true
       const server = await bluetoothDevice.gatt.connect();
       const service = await server.getPrimaryService(
         '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
@@ -40,6 +42,7 @@ export const useBluetooth = () => {
 
       console.log('Bluetooth connected successfully');
     } catch (error) {
+      isConnected.value = false; // Set connection status to false in case of an error
       console.error('Error connecting to Bluetooth: ', error);
     }
   };
@@ -74,6 +77,7 @@ export const useBluetooth = () => {
   const disconnectBluetooth = async () => {
     try {
       await bluetoothDevice.gatt.disconnect();
+      isConnected.value = false; // Set connection status to false upon disconnection
       console.log('Bluetooth disconnected successfully');
     } catch (error) {
       console.error('Error disconnecting Bluetooth: ', error);
@@ -82,6 +86,7 @@ export const useBluetooth = () => {
 
   return {
     decodedData,
+    isConnected, // expose connection status
     connectBluetooth,
     getDataFromBluetooth,
     disconnectBluetooth,

@@ -14,15 +14,20 @@
       <p class="font-bold text-center">{{ decodedData }}</p>
     </div>
     <div class="flex items-stretch flex-col">
-      <button @click="connectBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 rounded mb-4">Connect to Bluetooth device</button>
-      <button @click="getDataFromBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 mb-4 rounded">Get Data</button>
-      <button @click="disconnectBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 rounded">Disconnect</button>
+      <button @click="connectBluetooth" 
+              :class="{ 'bg-[#808080]': isConnected, 'bg-[#92278F]': !isConnected, 'hover:bg-[#662D91]': !isConnected }" 
+              :disabled="isConnected"
+              class="text-[#FFFFFF] font-bold py-2 px-4 rounded mb-4">
+        {{ isConnected ? 'Device connected' : 'Connect to Bluetooth device' }}
+      </button>   
+      <button @click="getDataFromBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 mb-4 rounded">Scan color</button>
+      <button v-if="isConnected" @click="disconnectBluetooth" class="bg-[#92278F] hover:bg-[#662D91] text-[#FFFFFF] font-bold py-2 px-4 rounded">Disconnect device</button>
     </div>
   </div>
 </template>
 
 <script setup>
-const { connectBluetooth, decodedData, getDataFromBluetooth, disconnectBluetooth } = useBluetooth();
+const { connectBluetooth, decodedData, isConnected, getDataFromBluetooth, disconnectBluetooth } = useBluetooth();
 
 // Create a ref to store the decoded data
 const decodedDataRef = ref('');
