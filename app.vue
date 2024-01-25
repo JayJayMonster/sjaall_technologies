@@ -11,7 +11,10 @@
       This is your colour:
     </div>
     <div class="m-2">
-      <p class="font-bold text-center">{{ decodedData }}</p>
+      <p 
+        v-if="isConnected" 
+        class="font-bold text-center">
+      {{ decodedData }}</p>
     </div>
     <div class="flex items-stretch flex-col">
       <button @click="connectBluetooth" 
@@ -37,17 +40,19 @@ watchEffect(() => {
   decodedDataRef.value = decodedData.value;
 });
 
-// // Create a computed property for setting the background color
+// Create a computed property for setting the background color
 const computedBackgroundColor = computed({
-      get: () => decodedDataRef.value,
-      set: (value) => {
-        // Check if we are in a browser environment
-        if (typeof window !== 'undefined') {
-          document.body.style.backgroundColor = value;
-        }
-        decodedDataRef.value = value;
-      },
-    });
+  get: () => {
+    return isConnected ? decodedDataRef.value : '#FFFFFF'; // Use white background when not connected
+  },
+  set: (value) => {
+    if (typeof window !== 'undefined') {
+        document.body.style.backgroundColor = value;
+    }
+
+    decodedDataRef.value = value;
+  },
+});
 
 
 //   // Watch for changes in decodedData and trigger the computed property to update

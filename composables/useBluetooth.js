@@ -78,6 +78,7 @@ export const useBluetooth = () => {
     try {
       await bluetoothDevice.gatt.disconnect();
       isConnected.value = false; // Set connection status to false upon disconnection
+      decodedData.value = `rgb(255, 255, 255)`;
       console.log('Bluetooth disconnected successfully');
     } catch (error) {
       console.error('Error disconnecting Bluetooth: ', error);
